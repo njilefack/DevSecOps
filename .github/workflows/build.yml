@@ -48,7 +48,7 @@ jobs:
         with:
           push: false
           context: .
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
           #tags: ${{ env.env_var }}:lastest,${{ env.env_var }}:${{ steps.versioning.outputs.version }}
       
       ## log into image registry/repo of choice
@@ -63,7 +63,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+          image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
 
       #image-ref: ${{ env.env_var }}:lastest,${{ env.env_var }}:${{ steps.versioning.outputs.version }}
           format: 'table'
@@ -85,7 +85,7 @@ jobs:
       ## Command to push docker image to registry/repo
       - name: Push docker image to registry/repo post scanning
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
 
       ## Begin k8s suply chain security configuration by signing docker image digitally with COSIGN. Other tools
       ## can be used as well such as Notary Server
@@ -96,14 +96,14 @@ jobs:
       - name: Sign image with COSIGN_PRIVATE_KEY
         run: |
           export COSIGN_PASSWORD=${{ secrets.COSIGN_PASSWORD }}
-          export TAGS=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+          export TAGS=${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
           cosign sign --key env://COSIGN_PRIVATE_KEY ${TAGS} -y
 
       ## verify signature on image with COSIGN_PUBLIC_KEY
       - name: Verify image signature
         run: |
           export COSIGN_PASSWORD=${{ secrets.COSIGN_PASSWORD }}
-          export TAGS=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+          export TAGS=${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
           cosign verify --key env://COSIGN_PUBLIC_KEY ${TAGS}
       
       ## create a release in github
