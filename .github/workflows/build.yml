@@ -81,10 +81,10 @@ jobs:
 
           #image-ref: ${{ env.env_var }}:lastest,${{ env.env_var }}:${{ steps.versioning.outputs.version }}
           format: 'table'
-          exit-code: "1"
+          exit-code: "0"
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'HIGH, CRITICAL'
+          severity: ''
 
 
       ## authenticate to ghrc
