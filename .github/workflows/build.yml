@@ -40,7 +40,7 @@ jobs:
           major_pattern: "feat:"
           minor_pattern: "fix:"
           short_tags: "chore:"
-          format: "v$DevSecOps-{major}.${minor}.${patch}-${increment}" ## you can add the prefix to your image name as image_name-${increment}
+          format: "DevSecOps-v${major}.${minor}.${patch}-${increment}" ## you can add the prefix to your image name as image_name-${increment}
 
       ## build and tage docker image action
       - name: Build and tage docker image
