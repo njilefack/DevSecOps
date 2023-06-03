@@ -2,8 +2,9 @@
 
 - Create a directory to save your cosign key. Run;
 
-``bash 
+```bash 
 mkdir cosign-key && cd cosign-key
+```
 
 - `cd` into `cosign-key` and generate cosign keys by running the following
 
