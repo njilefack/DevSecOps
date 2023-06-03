@@ -84,7 +84,7 @@ jobs:
           exit-code: "1"
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: ''
+          severity: 'HIGH, CRITICAL'
 
 
       ## authenticate to ghrc
@@ -129,5 +129,3 @@ jobs:
           tag_name: ${{ steps.versioning.outputs.version }}
           release_name: ${{ steps.versioning.outputs.version }}
           prerelease: true
-
-
