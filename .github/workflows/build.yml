@@ -1,0 +1,133 @@
+# name: Build
+# on: [push, pull_request]
+# jobs:
+#   build:
+#     name: Build
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Set up Docker Buildx
+#       uses: docker/setup-buildx-action@v2
+#     - name: Build
+#       uses: docker/build-push-action@v3
+#       with:
+#         push: false
+
+
+name: Docker Getting Started Image CI
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  build:
+    name: docker getting started image build
+    runs-on: ubuntu-22.04
+    env:
+      #env_var: ${{ vars.IMG_NAME }}
+      env_var: ${{ secrets.DOCKER_HUB_USERNAME }}
+      COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+      COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: docker file linting
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          config: hadolint-config.yaml
+          ignore: 'DL3018,DL3019,DL3042,DL3059'
+
+      ## Create Semantic Version/Image Tag
+      - name: Semantic Versioning
+        id: versioning
+        uses: PaulHatch/semantic-version@v4.0.2
+        with:
+          branch: master
+          tag_prefix: "v"
+          major_pattern: "feat:"
+          minor_pattern: "fix:"
+          short_tags: "chore:"
+          format: "v${major}.${minor}.${patch}-gettingstarted${increment}" ## you can add the prefix to your image name as image_name-${increment}
+
+      ## build and tage docker image action
+      - name: Build and tage docker image
+        uses: docker/build-push-action@v3
+        with:
+          push: false
+          context: .
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+          #tags: ${{ env.env_var }}:lastest,${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+      
+      ## log into image registry/repo of choice
+      # - name: Log into image repo
+      #   uses: docker/login-action@v2
+      #   with:
+      #     registry: ${{ secrets.NEXUS_URL }}
+      #     username: {{ secrets.NEXUS_USERNAME }}
+      #     password: {{ secrets.NEXUS_PASSWORD }}
+      
+      ## scan docker image with scanning tool of choice
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+
+          #image-ref: ${{ env.env_var }}:lastest,${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+          format: 'table'
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: ''
+
+
+      ## authenticate to ghrc
+      - name: log into dockerhub
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.REGISTRY }}
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      
+      
+      ## Command to push docker image to registry/repo
+      - name: Push docker image to registry/repo post scanning
+        run: |
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+
+      ## Begin k8s suply chain security configuration by signing docker image digitally with COSIGN. Other tools
+      ## can used as well such as Notary Server
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@main
+
+      ## Sign the image with Cosign
+      - name: Sign image with COSIGN_PRIVATE_KEY
+        run: |
+          export COSIGN_PASSWORD=${{ secrets.COSIGN_PASSWORD }}
+          export TAGS=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+          cosign sign --key env://COSIGN_PRIVATE_KEY ${TAGS}
+
+      ## verify signature on image with COSIGN_PUBLIC_KEY
+      - name: Verify image signature
+        run: |
+          export COSIGN_PASSWORD=${{ secrets.COSIGN_PASSWORD }}
+          export TAGS=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+          cosign verify --key env://COSIGN_PUBLIC_KEY ${TAGS}
+      
+      ## create a release in github
+      - name: Create github release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          tag_name: ${{ steps.versioning.outputs.version }}
+          release_name: ${{ steps.versioning.outputs.version }}
+          prerelease: true
+
+
