@@ -1,11 +1,11 @@
 
 
 name: DevSecOps Is The Way To Go
-
 on:
   push:
     branches:
       - "master"
+      - "main"
 
 jobs:
   build:
@@ -19,9 +19,16 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@master
         with:
           fetch-depth: 0
+          
+      - name: SonarQube Scan
+        uses: kitabisa/sonarqube-action@v1.2.0
+        with:
+          host: ${{ secrets.SONARQUBE_HOST }}
+          login: ${{ secrets.SONARQUBE_TOKEN }}
+          projectKey: devsecops
       
       - name: docker file linting
         uses: hadolint/hadolint-action@v3.1.0
