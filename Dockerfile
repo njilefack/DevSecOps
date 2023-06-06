@@ -15,7 +15,8 @@ COPY app/src ./src
 
 # Run tests to validate app
 FROM app-base AS test
-RUN yarn install --ignore-scripts
+RUN yarn install 
+##B RUN yarn install --ignore-scripts does not execute any scripts defined in the project package.json and its dependencies.
 RUN yarn test
 
 # Clear out the node_modules and create the zip
@@ -41,5 +42,8 @@ RUN mkdocs build
 # and use a nginx image to serve the content
 #FROM --platform=$TARGETPLATFORM nginx:alpine
 FROM nginx:alpine
+USER ${username:-gentle}
+ARG username
+USER $username
 COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
 COPY --from=build /app/site /usr/share/nginx/html
