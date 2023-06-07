@@ -28,7 +28,26 @@ jobs:
         with:
           host: ${{ secrets.SONARQUBE_HOST }}
           login: ${{ secrets.SONARQUBE_TOKEN }}
-          projectKey: devsecops
+          projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
+
+        ## Set up qulity Gate
+      - name: Wait for the quality gate result
+        run: sleep 5
+
+      - uses: phwt/sonarqube-quality-gate-action@v1
+        id: quality-gate-check
+        with:
+          sonar-project-key: ${{ secrets.SONAR_PROJECT_KEY }}
+          sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Output result
+        run: |
+          echo "${{ steps.quality-gate-check.outputs.project-status }}"
+          echo "${{ steps.quality-gate-check.outputs.quality-gate-result }}"
+
+      ## Evaluate Dockerfile for poper set-up
       
       - name: docker file linting
         uses: hadolint/hadolint-action@v3.1.0
@@ -58,13 +77,6 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
           #tags: ${{ env.env_var }}:lastest,${{ env.env_var }}:${{ steps.versioning.outputs.version }}
       
-      ## log into image registry/repo of choice
-      # - name: Log into image repo
-      #   uses: docker/login-action@v2
-      #   with:
-      #     registry: ${{ secrets.NEXUS_URL }}
-      #     username: {{ secrets.NEXUS_USERNAME }}
-      #     password: {{ secrets.NEXUS_PASSWORD }}
       
       ## scan docker image with scanning tool of choice
       - name: Run Trivy vulnerability scanner
