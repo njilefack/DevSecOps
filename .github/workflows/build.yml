@@ -25,7 +25,7 @@ jobs:
       - name: scan for any sensitive data
         uses: max/secret-scan@master
           
-        
+        ##DAST
       # - name: SonarQube Scan
       #   uses: kitabisa/sonarqube-action@v1.2.0
       #   with:
@@ -71,7 +71,7 @@ jobs:
           minor_pattern: "fix:"
           short_tags: "chore:"
           format: "DevSecOps-v${major}.${minor}.${patch}-${increment}" ## you can add the prefix to your image name as image_name-${increment}
-
+      ## BUILD
       ## build and tage docker image action
       - name: Build and tage docker image
         uses: docker/build-push-action@v3
@@ -81,7 +81,7 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
           #tags: ${{ env.env_var }}:lastest,${{ env.env_var }}:${{ steps.versioning.outputs.version }}
       
-      
+      ##SAST
       ## scan docker image with scanning tool of choice
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
