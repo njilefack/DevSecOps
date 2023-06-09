@@ -35,7 +35,7 @@ jobs:
         with:
           host: ${{ secrets.SONARQUBE_HOST }}
           login: ${{ secrets.SONARQUBE_TOKEN }}
-          projectKey: ${{ secrets.SONAR_PROJECT_KEY }} 
+          projectKey: devsecops #${{ secrets.SONAR_PROJECT_KEY }} 
 
       #   ## Set up qulity Gate
       # - name: Wait for the quality gate result
