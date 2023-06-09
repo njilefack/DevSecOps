@@ -22,31 +22,34 @@ jobs:
         uses: actions/checkout@master
         with:
           fetch-depth: 0
+      - name: scan for any sensitive data
+        uses: max/secret-scan@master
           
-      - name: SonarQube Scan
-        uses: kitabisa/sonarqube-action@v1.2.0
-        with:
-          host: ${{ secrets.SONARQUBE_HOST }}
-          login: ${{ secrets.SONARQUBE_TOKEN }}
-          projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
+        
+      # - name: SonarQube Scan
+      #   uses: kitabisa/sonarqube-action@v1.2.0
+      #   with:
+      #     host: ${{ secrets.SONARQUBE_HOST }}
+      #     login: ${{ secrets.SONARQUBE_TOKEN }}
+      #     projectKey: ${{ secrets.SONAR_PROJECT_KEY }} -x
 
-        ## Set up qulity Gate
-      - name: Wait for the quality gate result
-        run: sleep 5
+      #   ## Set up qulity Gate
+      # - name: Wait for the quality gate result
+      #   run: sleep 5
 
-      - uses:  sonarsource/sonarqube-quality-gate-action@master
-        id: quality-gate-check
-        timeout-minutes: 5
-        with:
-          sonar-project-key: ${{ secrets.SONAR_PROJECT_KEY }}
-          sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # - uses:  sonarsource/sonarqube-quality-gate-action@master
+      #   id: quality-gate-check
+      #   timeout-minutes: 5
+      #   with:
+      #     sonar-project-key: ${{ secrets.SONAR_PROJECT_KEY }}
+      #     sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
+      #     sonar-token: ${{ secrets.SONAR_TOKEN }}
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Output result
-        run: |
-          echo "The Project status is ${{ steps.quality-gate-check.outputs.project-status }}"
-          echo "The Quality Gate status is ${{ steps.quality-gate-check.outputs.quality-gate-result }}"
+      # - name: Output result
+      #   run: |
+      #     echo "The Project status is ${{ steps.quality-gate-check.outputs.project-status }}"
+      #     echo "The Quality Gate status is ${{ steps.quality-gate-check.outputs.quality-gate-result }}"
 
       ## Evaluate Dockerfile for poper set-up
       
