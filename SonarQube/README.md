@@ -34,7 +34,7 @@ docker run -d \
 <details><summary>View</summary>
 <p>
 
-`Ngrok` exposes with a via a unique url that overides use of `localhost:9000`. This `localhost:9000` may not resolve to sonarqube server/application causing the pipeline to fail. `Ngrok` creates a `hostname/domain name` that maps to `localhost:9000`
+`Ngrok` exposes your application (running locslly) with a unique `url` that overides use of `localhost:port#`. For example SonarQube deployed above is running locally and be accessed via `localhost:9000`. This `localhost:9000` may not resolve to sonarqube server/application from GitHub which nay cause the pipeline to fail. `Ngrok` creates a `hostname/domain name` that maps to `localhost:9000`. The domain name can be used to access SonarQube without any problem
 
 - Once `Ngrok` account is created, navigate to Dashboard.
 ![Ngrok dashboard](./images/ngrok-dasboard.png)
