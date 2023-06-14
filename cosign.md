@@ -13,4 +13,3 @@ cosign generate-key-pair
 ```
 This will prompt you to put password. Enter password and remember not to forget the password. This password will be used to verify public key in the pipeline.
 
-- 
