@@ -19,7 +19,7 @@ docker run -d \
 
 #### **Step 3: Expose Sonarqube With Ngrok**
 
-`Ngrok` exposes with a via a unique url that overides use of `localhost:9000`. This `localhost:9000` may not resolve to sonarqube application causing the pipeline to fail. `Ngrok` creates a `hostname/domain name` that maps to `Slocalhost:9000`
+`Ngrok` exposes with a via a unique url that overides use of `localhost:9000`. This `localhost:9000` may not resolve to sonarqube server/application causing the pipeline to fail. `Ngrok` creates a `hostname/domain name` that maps to `Slocalhost:9000`
 
 - Once `Ngrok` account is created, navigate to Dashboard.
 ![Ngrok dashboard](./images/ngrok-dasboard.png)
@@ -30,8 +30,10 @@ docker run -d \
 ```bash
 docker run -d -p 4040:4040 --name ngrok  -e NGROK_AUTHTOKEN=<You Authtoken here> ngrok/ngrok:latest http host.docker.internal:9000
 ```
-NB >
- `SonarQube` instance deployed earlier on is exposed externally on port `9000`. `Ngrok` will route internal http traffic to port `9000`
+
+#### NB
+
+> `SonarQube` instance deployed earlier on is exposed externally on port `9000`. `Ngrok` will route internal http traffic to port `9000`
 
 - You can find details of `Ngrok` configuration [here](https://ngrok.com/docs/using-ngrok-with/docker/).
 
