@@ -88,3 +88,14 @@ sonar-scanner \
  - Set `SONARQUBE_TOKEN=token generated on step 5`
  - (Optional). Set `SONAR_PROJECT_KEY=demo`
  ![Sonar-cred](./images/sonar-cred.png)
+
+ - Add this to your workflow and wait for job to run
+
+ ```bash
+ - name: SonarQube Scan
+        uses: kitabisa/sonarqube-action@v1.2.0
+        with:
+          host: ${{ secrets.SONARQUBE_HOST }}
+          login: ${{ secrets.SONARQUBE_TOKEN }}
+          projectKey: ${{ secrets.SONAR_PROJECT_KEY }} 
+```

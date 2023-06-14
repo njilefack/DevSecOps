@@ -1,142 +1,142 @@
-# name: DevSecOps Is The Way To Go
-# on:
-#   push:
-#     branches:
-#       - "master"
-#       - "main"
+name: DevSecOps Is The Way To Go
+on:
+  push:
+    branches:
+      - "master"
+      - "main"
 
-# jobs:
-#   build:
-#     name: DevSecOps Best Practice
-#     runs-on: ubuntu-22.04
-#     env:
-#       #env_var: ${{ vars.IMG_NAME }}
-#       env_var: ${{ secrets.DOCKER_HUB_USERNAME }}
-#       COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-#       COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
+jobs:
+  build:
+    name: DevSecOps Best Practice
+    runs-on: ubuntu-22.04
+    env:
+      #env_var: ${{ vars.IMG_NAME }}
+      env_var: ${{ secrets.DOCKER_HUB_USERNAME }}
+      COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+      COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
     
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@master
-#         with:
-#           fetch-depth: 0
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 0
 
-#       #     ref: ${{ github.head_ref }} #necessary for pull request workflow trigger
-#       # - name: trufflehog-actions-scan
-#       #   uses: edplato/trufflehog-actions-scan@master
-#       #   with:
-#       #     scanArguments: "--regex --entropy=False --max_depth=5 --rules /regexes.json"
+      #     ref: ${{ github.head_ref }} #necessary for pull request workflow trigger
+      # - name: trufflehog-actions-scan
+      #   uses: edplato/trufflehog-actions-scan@master
+      #   with:
+      #     scanArguments: "--regex --entropy=False --max_depth=5 --rules /regexes.json"
           
-#         ##DAST
-#       - name: SonarQube Scan
-#         uses: kitabisa/sonarqube-action@v1.2.0
-#         with:
-#           host: ${{ secrets.SONARQUBE_HOST }}
-#           login: ${{ secrets.SONARQUBE_TOKEN }}
-#           projectKey: devsecops #${{ secrets.SONAR_PROJECT_KEY }} 
+        ##DAST
+      - name: SonarQube Scan
+        uses: kitabisa/sonarqube-action@v1.2.0
+        with:
+          host: ${{ secrets.SONARQUBE_HOST }}
+          login: ${{ secrets.SONARQUBE_TOKEN }}
+          projectKey: devsecops #${{ secrets.SONAR_PROJECT_KEY }} 
 
-#       #   ## Set up qulity Gate
-#       # - name: Wait for the quality gate result
-#       #   run: sleep 5
+      #   ## Set up qulity Gate
+      # - name: Wait for the quality gate result
+      #   run: sleep 5
 
-#       # - uses:  sonarsource/sonarqube-quality-gate-action@master
-#       #   id: quality-gate-check
-#       #   timeout-minutes: 5
-#       #   with:
-#       #     sonar-project-key: ${{ secrets.SONAR_PROJECT_KEY }}
-#       #     sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
-#       #     sonar-token: ${{ secrets.SONAR_TOKEN }}
-#       #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      # - uses:  sonarsource/sonarqube-quality-gate-action@master
+      #   id: quality-gate-check
+      #   timeout-minutes: 5
+      #   with:
+      #     sonar-project-key: ${{ secrets.SONAR_PROJECT_KEY }}
+      #     sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
+      #     sonar-token: ${{ secrets.SONAR_TOKEN }}
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
-#       # - name: Output result
-#       #   run: |
-#       #     echo "The Project status is ${{ steps.quality-gate-check.outputs.project-status }}"
-#       #     echo "The Quality Gate status is ${{ steps.quality-gate-check.outputs.quality-gate-result }}"
+      # - name: Output result
+      #   run: |
+      #     echo "The Project status is ${{ steps.quality-gate-check.outputs.project-status }}"
+      #     echo "The Quality Gate status is ${{ steps.quality-gate-check.outputs.quality-gate-result }}"
 
-#       ## Evaluate Dockerfile for poper set-up
+      ## Evaluate Dockerfile for poper set-up
       
-#       - name: docker file linting
-#         uses: hadolint/hadolint-action@v3.1.0
-#         with:
-#           dockerfile: Dockerfile
-#           config: hadolint-config.yaml
-#           ignore: 'DL3018,DL3019,DL3042,DL3059'
+      - name: docker file linting
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          config: hadolint-config.yaml
+          ignore: 'DL3018,DL3019,DL3042,DL3059'
 
-#       ## Create Semantic Version/Image Tag
-#       - name: Semantic Versioning
-#         id: versioning
-#         uses: PaulHatch/semantic-version@v4.0.2
-#         with:
-#           branch: master
-#           tag_prefix: "v"
-#           major_pattern: "feat:"
-#           minor_pattern: "fix:"
-#           short_tags: "chore:"
-#           format: "DevSecOps-v${major}.${minor}.${patch}-${increment}" ## you can add the prefix to your image name as image_name-${increment}
-#       ## BUILD
-#       ## build and tage docker image action
-#       - name: Build and tage docker image
-#         uses: docker/build-push-action@v3
-#         with:
-#           push: false
-#           context: .
-#           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
-#           #tags: ${{ env.env_var }}:lastest,${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+      ## Create Semantic Version/Image Tag
+      - name: Semantic Versioning
+        id: versioning
+        uses: PaulHatch/semantic-version@v4.0.2
+        with:
+          branch: master
+          tag_prefix: "v"
+          major_pattern: "feat:"
+          minor_pattern: "fix:"
+          short_tags: "chore:"
+          format: "DevSecOps-v${major}.${minor}.${patch}-${increment}" ## you can add the prefix to your image name as image_name-${increment}
+      ## BUILD
+      ## build and tage docker image action
+      - name: Build and tage docker image
+        uses: docker/build-push-action@v3
+        with:
+          push: false
+          context: .
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
+          #tags: ${{ env.env_var }}:lastest,${{ env.env_var }}:${{ steps.versioning.outputs.version }}
       
-#       ##SAST
-#       ## scan docker image with scanning tool of choice
-#       - name: Run Trivy vulnerability scanner
-#         uses: aquasecurity/trivy-action@master
-#         with:
-#           image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
+      ##SAST
+      ## scan docker image with scanning tool of choice
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
 
-#       #image-ref: ${{ env.env_var }}:lastest,${{ env.env_var }}:${{ steps.versioning.outputs.version }}
-#           format: 'table'
-#           exit-code: "0"
-#           ignore-unfixed: true
-#           vuln-type: 'os,library'
-#           severity: ''
+      #image-ref: ${{ env.env_var }}:lastest,${{ env.env_var }}:${{ steps.versioning.outputs.version }}
+          format: 'table'
+          exit-code: "0"
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: ''
 
 
-#       ## authenticate to Container Registry
-#       - name: log into dockerhub
-#         uses: docker/login-action@v1
-#         with:
-#           registry: ${{ secrets.REGISTRY }}
-#           username: ${{ secrets.DOCKER_HUB_USERNAME }}
-#           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      ## authenticate to Container Registry
+      - name: log into dockerhub
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.REGISTRY }}
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
       
       
-#       ## Command to push docker image to registry/repo
-#       - name: Push docker image to registry/repo post scanning
-#         run: |
-#           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
+      ## Command to push docker image to registry/repo
+      - name: Push docker image to registry/repo post scanning
+        run: |
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
 
-#       ## Begin k8s suply chain security configuration by signing docker image digitally with COSIGN. Other tools
-#       ## can be used as well such as Notary Server
-#       - name: Install Cosign
-#         uses: sigstore/cosign-installer@main
+      ## Begin k8s suply chain security configuration by signing docker image digitally with COSIGN. Other tools
+      ## can be used as well such as Notary Server
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@main
 
-#       ## Sign the image with Cosign
-#       - name: Sign image with COSIGN_PRIVATE_KEY
-#         run: |
-#           export COSIGN_PASSWORD=${{ secrets.COSIGN_PASSWORD }}
-#           export TAGS=${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
-#           cosign sign --key env://COSIGN_PRIVATE_KEY ${TAGS} -y
+      ## Sign the image with Cosign
+      - name: Sign image with COSIGN_PRIVATE_KEY
+        run: |
+          export COSIGN_PASSWORD=${{ secrets.COSIGN_PASSWORD }}
+          export TAGS=${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
+          cosign sign --key env://COSIGN_PRIVATE_KEY ${TAGS} -y
 
-#       ## verify signature on image with COSIGN_PUBLIC_KEY
-#       - name: Verify image signature
-#         run: |
-#           export COSIGN_PASSWORD=${{ secrets.COSIGN_PASSWORD }}
-#           export TAGS=${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
-#           cosign verify --key env://COSIGN_PUBLIC_KEY ${TAGS}
+      ## verify signature on image with COSIGN_PUBLIC_KEY
+      - name: Verify image signature
+        run: |
+          export COSIGN_PASSWORD=${{ secrets.COSIGN_PASSWORD }}
+          export TAGS=${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}:${{ steps.versioning.outputs.version }}
+          cosign verify --key env://COSIGN_PUBLIC_KEY ${TAGS}
       
-#       ## create a release in github
-#       - name: Create github release
-#         uses: actions/create-release@v1
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-#         with:
-#           tag_name: ${{ steps.versioning.outputs.version }}
-#           release_name: ${{ steps.versioning.outputs.version }}
-#           prerelease: true
+      ## create a release in github
+      - name: Create github release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          tag_name: ${{ steps.versioning.outputs.version }}
+          release_name: ${{ steps.versioning.outputs.version }}
+          prerelease: true
