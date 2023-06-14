@@ -40,4 +40,7 @@ docker run -d -p 4040:4040 --name ngrok  -e NGROK_AUTHTOKEN=<You Authtoken here>
 #### **Step 4: Access Sonarqube via Ngrok**
 
 - On your favorite browser lunch `localhost:4040`. you should see something like this.
+![Ngrok Landing](./images/ngrok-landing.png)
 
+- Once open, click on `visit site` and this will redirect traffic to `sonarqube` server on `localhost:9000` with `url` similar to `https://a0d2-129-0-103-88.ngrok-free.app`.
+![Sonarqube server](./images/visit.png)
