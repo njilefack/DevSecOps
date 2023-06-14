@@ -21,7 +21,7 @@ docker run -d \
 
 `Ngrok` exposes with a via a unique url that overides use of `localhost:9000`. localhost:9000 may not resolve to sonarqube application causing the pipeline to fail. `Ngrok` creates a `hostname/domain name` that maps to `Slocalhost:9000`
 
-- ![Once `Ngrok` account is created, navigate to Dashboard.](url "ngrok-dasboard.png")
+- ![Once `Ngrok` account is created, navigate to Dashboard.](./images/ngrok-dasboard.png)
 - Click on the  drop-down botton infront of `Getting Started` then `Your AuthToken`.
 - Copy your `Authtoken`.
 - Deploy `Ngrok` that to expose sonarqube with this command;
