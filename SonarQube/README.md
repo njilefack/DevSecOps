@@ -22,6 +22,7 @@ docker run -d \
 **Step 2: Create Ngrok account**
 <details><summary>View</summary>
 <p>
+
 - `Ngrok` is a simplified API-first ingress-as-a-service that adds connectivity, security, and observability to your apps in one line. You can sign-up [here](https://ngrok.com/).
 
 - You can create an `Ngrok` account with already existed `GitHub` account. 
