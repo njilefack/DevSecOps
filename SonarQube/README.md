@@ -1,4 +1,4 @@
-###  This Guide provide Quick and Easy Steps to Deploy Sonarqube on Docker 
+###  This Guide provides Quick and Easy Steps to Deploy Sonarqube on Docker And Integrate it with GitHub
 
 #### **Step 1: Deploy SonarQube**
 
@@ -58,7 +58,7 @@ docker run -d -p 4040:4040 --name ngrok  -e NGROK_AUTHTOKEN=<You Authtoken here>
 - Click on `Locally`
 ![local Set up](./images/manual-set-up.png)
 - Set an expiration date for your token. 
- > You can equally click on `Use existing token` if you have created and configure one
+ > You can equally click on `Use existing token` if you have created and configured one
 - Click `Generate` once set.
 ![generate token](./images/generate-token.png)
 - You should see something like this
@@ -66,7 +66,7 @@ docker run -d -p 4040:4040 --name ngrok  -e NGROK_AUTHTOKEN=<You Authtoken here>
 - Click on `Continue`
 ![Analyzer](./images/analyze.png)
 
-- Click on `Others` and select `Linux` qw your `OS`.
+- Click on `Others` and select `Linux` as your `OS`.
 
 > This portion of configuration depends on what you want to check or scan on your code. 
 
@@ -78,3 +78,13 @@ sonar-scanner \
   -Dsonar.host.url=https://a0d2-129-0-103-88.ngrok-free.app \
   -Dsonar.token=sqp_bf7615fb32779cab2159c4cda1c09b6cce0e8015
 ```
+
+#### **Step 6: Integrate SonarQube with GitHub**
+
+ - On your project/project select **Settings > Secrets and Variables > Actions**
+ ![GitHuB](./images/github-inte.png)
+ - Click on **New repository and secret** 
+ - Set `SONARQUBE_HOST=https://a0d2-129-0-103-88.ngrok-free.app`
+ - Set `SONARQUBE_TOKEN=token generated on step 5`
+ - (Optional). Set `SONAR_PROJECT_KEY=demo`
+ ![Sonar-cred](./images/sonar-cred.png)
