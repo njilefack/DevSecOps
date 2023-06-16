@@ -34,7 +34,7 @@ docker run -d \
 <details><summary>View</summary>
 <p>
 
-`Ngrok` exposes your application (running locslly) with a unique `url` that overides use of `localhost:port#`. For example SonarQube deployed above is running locally and be accessed via `localhost:9000`. This `localhost:9000` may not resolve to sonarqube server/application from GitHub which nay cause the pipeline to fail. `Ngrok` creates a `hostname/domain name` that maps to `localhost:9000`. The domain name can be used to access SonarQube without any problem
+`Ngrok` exposes your application (running locslly) with a unique `url` that overides use of `localhost:port#`. For example SonarQube deployed above is running locally and can be accessed via `localhost:9000`. This `localhost:9000` may not resolve to sonarqube server/application from GitHub which may cause the pipeline to fail. `Ngrok` creates a `hostname/domain name` that maps to `localhost:9000`. The domain name can be used to access SonarQube without any problem
 
 - Once `Ngrok` account is created, navigate to Dashboard.
 ![Ngrok dashboard](./images/ngrok-dasboard.png)
@@ -43,7 +43,7 @@ docker run -d \
 - Deploy `Ngrok` that to expose sonarqube with this command;
 
 ```bash
-docker run -d -p 4040:4040 --name ngrok  -e NGROK_AUTHTOKEN=<You Authtoken here> ngrok/ngrok:latest http host.docker.internal:9000
+docker run -d -p 4040:4040 --name ngrok  -e NGROK_AUTHTOKEN=<Your Authtoken here> ngrok/ngrok:latest http host.docker.internal:9000
 ```
 
 **NB**
@@ -107,7 +107,7 @@ sonar-scanner \
 <details><summary>View</summary>
 <p>
 
- - On your project/project select **Settings > Secrets and Variables > Actions**
+ - On your project/repository select **Settings > Secrets and Variables > Actions**
  ![GitHuB](./images/github-inte.png)
  - Click on **New repository and secret** 
  - Set `SONARQUBE_HOST=https://a0d2-129-0-103-88.ngrok-free.app`
