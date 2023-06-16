@@ -36,17 +36,30 @@ jobs:
           projectKey: devsecops #${{ secrets.SONAR_PROJECT_KEY }} 
 
         ## Set up qulity Gate
-      - name: Wait for the quality gate result
-        run: sleep 5
-
-      - uses:  sonarsource/sonarqube-quality-gate-action@master
-        id: quality-gate-check
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        # Force to fail step after specific time.
         timeout-minutes: 5
-        with:
-          sonar-project-key: ${{ secrets.SONAR_PROJECT_KEY }}
-          sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} 
+  
+      # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
+      - name: "Example show SonarQube Quality Gate Status value"
+        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
+      
+        # - name: Wait for the quality gate result
+      #   run: sleep 5
+
+      # - uses:  sonarsource/sonarqube-quality-gate-action@master
+      #   id: quality-gate-check
+      #   timeout-minutes: 5
+      #   with:
+      #     sonar-project-key: ${{ secrets.SONAR_PROJECT_KEY }}
+      #     sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
+      #     sonar-token: ${{ secrets.SONAR_TOKEN }}
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Output result
         run: |
