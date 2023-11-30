@@ -47,3 +47,5 @@ ARG username
 USER $username
 COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
 COPY --from=build /app/site /usr/share/nginx/html
+
+
